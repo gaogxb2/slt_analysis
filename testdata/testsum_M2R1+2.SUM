@@ -1,0 +1,58 @@
+****TITLE xxx******
+
+LOT NO. : AB0000AB1
+Mater Traveler QTY : 100
+Input Testing QTY : 5
+START TIME : 2020/02/02 10:30:01
+Bin : 1
+Total Pass: 3
+Total Fail : 2
+Pass Yield : 60.00%
+Lot Start Date : 2020/02/02 01:01:01
+Report Date : 2020/02/02 11:01:01
+STAGE : MT2
+
+Test Mode : M2R1+2
+
+Temperature : 99
+
+
+*****Site3 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1          1         100.00%   1000   PASS
+
+
+*****Site4 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1111         2          1          50.00%   4000   E2
+1000         1          1          50.00%   1000   PASS
+
+
+*****Site5 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1          1          50.00%   1000   PASS
+1111         2          1          50.00%   4000   E2
+
+
+*****Total Site Summary   ***********
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1          3          60.00%   1000   PASS
+1111         2          2          40.00%   4000   E2
+************** End ******
+
+******** Site Counter / Yield *******
+Site No     Site Counter    Pass   Fail   Site Yield(%)
+   3          1              1      0      100.00%
+   4          2              1      1      50.00%
+   5          2              1      1      50.00%
+
+******Rawdata list*******
+ErrorCode=1000,SoftwareBin=1000,DieID=90E5 3378 6363 97AD,Tj=43.1.49.1.47.9.52.1,Temperature=99,Site=3,BiosTime=104.0s,TestTime=78.1,2DBarCode=561848544109,BootOn=PASS
+ErrorCode=4000,SoftwareBin=1111,DieID=FD9B 12F4 40A3 A9FB,Tj=51.5.47.7.50.3.49.6,Temperature=99,Site=4,BiosTime=102.1s,TestTime=53.9,2DBarCode=461493668883,BootOn=FAIL
+ErrorCode=1000,SoftwareBin=1000,DieID=A221 F9D4 1261 2308,Tj=47.3.50.0.45.6.40.5,Temperature=99,Site=4,BiosTime=126.7s,TestTime=83.4,2DBarCode=771120303424,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=9A6F EA84 0FF2 1F24,Tj=52.3.53.7.49.9.42.6,Temperature=99,Site=5,BiosTime=132.8s,TestTime=40.9,2DBarCode=831165735254,BootOn=PASS
+ErrorCode=4000,SoftwareBin=1111,DieID=3A94 6E17 DC32 E732,Tj=41.1.46.9.48.6.45.0,Temperature=99,Site=5,BiosTime=103.6s,TestTime=53.5,2DBarCode=329640047310,BootOn=FAIL

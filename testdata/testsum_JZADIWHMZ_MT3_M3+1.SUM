@@ -1,0 +1,59 @@
+****TITLE xxx******
+
+LOT NO. : JZADIWHMZ
+Mater Traveler QTY : 100
+Input Testing QTY : 15
+START TIME : 2020/02/09 01:01:01
+Bin : 1
+Total Pass: 13
+Total Fail : 2
+Pass Yield : 86.67%
+Lot Start Date : 2020/02/09 01:01:01
+Report Date : 2020/02/09 01:01:01
+STAGE : MT3
+
+Test Mode : M3+1
+
+Temperature : 99
+
+*****Site1 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1           8           80.00%   1000   PASS
+1212         3           1           10.00%   4001   E3
+1111         2           1           10.00%   4000   E2
+
+*****Site2 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1           5          100.00%   1000   PASS
+
+*****Total Site Summary   ***********
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1           13          86.67%   1000   PASS
+1212         3           1            6.67%   4001   E3
+1111         2           1            6.67%   4000   E2
+************** End ******
+
+******** Site Counter / Yield *******
+Site No     Site Counter    Pass   Fail   Site Yield(%)
+   1         10             8      2      80.00%
+   2         5              5      0      100.00%
+
+******Rawdata list*******
+ErrorCode=1000,SoftwareBin=1000,DieID=24AD BEF8 7D62 7248,Tj=42.1.41.5.51.1.48.2,Temperature=99,Site=1,BiosTime=121.3s,TestTime=31.9,2DBarCode=564517226431,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=2E85 8EC3 8E45 4F9B,Tj=43.2.51.5.41.5.45.7,Temperature=99,Site=1,BiosTime=105.1s,TestTime=50.6,2DBarCode=267468815019,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=E170 52BF 28DA 7730,Tj=53.0.45.7.46.8.52.5,Temperature=99,Site=1,BiosTime=91.4s,TestTime=51.3,2DBarCode=980602146818,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=723B 5F77 7545 106F,Tj=52.1.46.0.41.0.53.7,Temperature=99,Site=1,BiosTime=119.7s,TestTime=73.1,2DBarCode=123992745282,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=AA10 C642 2E8B 181F,Tj=52.9.42.3.42.4.50.2,Temperature=99,Site=1,BiosTime=121.7s,TestTime=53.1,2DBarCode=429471393042,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=25BD ED3B 01A9 86DA,Tj=54.6.51.4.47.6.41.6,Temperature=99,Site=1,BiosTime=123.8s,TestTime=80.5,2DBarCode=913351169189,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=46CE 7242 1DA8 7B53,Tj=53.2.54.2.41.3.47.3,Temperature=99,Site=1,BiosTime=84.8s,TestTime=75.6,2DBarCode=110228865842,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=F7AA E606 E729 3DF4,Tj=43.7.41.0.40.3.48.3,Temperature=99,Site=1,BiosTime=121.2s,TestTime=30.4,2DBarCode=721551608923,BootOn=PASS
+ErrorCode=4001,SoftwareBin=1212,DieID=2162 EA74 D06A 617D,Tj=41.4.49.9.45.3.46.2,Temperature=99,Site=1,BiosTime=140.5s,TestTime=33.3,2DBarCode=132998760086,BootOn=FAIL
+ErrorCode=4000,SoftwareBin=1111,DieID=9AA3 625E 3221 19E6,Tj=49.8.48.1.40.2.41.4,Temperature=99,Site=1,BiosTime=132.7s,TestTime=44.2,2DBarCode=780605069316,BootOn=FAIL
+ErrorCode=1000,SoftwareBin=1000,DieID=598B A3E1 613A 97EA,Tj=43.3.40.9.51.0.40.9,Temperature=99,Site=2,BiosTime=102.0s,TestTime=33.0,2DBarCode=795721427737,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=FB72 FD16 D6A4 A1FB,Tj=54.0.43.1.50.7.43.6,Temperature=99,Site=2,BiosTime=107.7s,TestTime=70.3,2DBarCode=280916596302,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=A880 FFE7 91E9 50C4,Tj=46.6.48.1.44.5.54.8,Temperature=99,Site=2,BiosTime=136.5s,TestTime=61.7,2DBarCode=715422574328,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=6E2F 44C9 8092 1A02,Tj=41.4.46.4.44.2.40.1,Temperature=99,Site=2,BiosTime=134.0s,TestTime=68.2,2DBarCode=099935765401,BootOn=PASS
+ErrorCode=1000,SoftwareBin=1000,DieID=9274 A7B9 9DD4 BAB3,Tj=53.5.51.9.52.9.53.5,Temperature=99,Site=2,BiosTime=94.7s,TestTime=45.0,2DBarCode=253394035174,BootOn=PASS

@@ -1,0 +1,46 @@
+****TITLE xxx******
+
+LOT NO. : AB0000AB1
+Mater Traveler QTY : 100
+Input Testing QTY : 2
+START TIME : 2020/02/02 13:45:01
+Bin : 1
+Total Pass: 1
+Total Fail : 1
+Pass Yield : 50.00%
+Lot Start Date : 2020/02/02 01:01:01
+Report Date : 2020/02/02 14:01:01
+STAGE : MT2
+
+Test Mode : M2R2+2
+
+Temperature : 99
+
+
+*****Site4 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1          1         100.00%   1000   PASS
+
+
+*****Site5 Summary  ******
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1111         2          1         100.00%   4000   E2
+
+
+*****Total Site Summary   ***********
+Software   Hardware    COUNT    Per(%)   Code    BinDESCRIPT
+Category     Bin
+1000         1          1          50.00%   1000   PASS
+1111         2          1          50.00%   4000   E2
+************** End ******
+
+******** Site Counter / Yield *******
+Site No     Site Counter    Pass   Fail   Site Yield(%)
+   4          1              1      0      100.00%
+   5          1              0      1      0.00%
+
+******Rawdata list*******
+ErrorCode=1000,SoftwareBin=1000,DieID=FD9B 12F4 40A3 A9FB,Tj=47.3.42.7.54.9.46.7,Temperature=99,Site=4,BiosTime=124.1s,TestTime=44.0,2DBarCode=461493668883,BootOn=PASS
+ErrorCode=4000,SoftwareBin=1111,DieID=3A94 6E17 DC32 E732,Tj=42.0.42.9.43.8.45.3,Temperature=99,Site=5,BiosTime=132.6s,TestTime=32.6,2DBarCode=329640047310,BootOn=FAIL
