@@ -3,6 +3,7 @@
 import hashlib
 import re
 import sys
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -48,7 +49,7 @@ def render_sum_from_template(
     date_offset_days: int = 0,
 ) -> str:
     dies = parsed.dies[:dies_subset] if dies_subset else list(parsed.dies)
-    pass_cnt = sum(1 for d in dies if d.boot_on.upper() == "PASS")
+    pass_cnt = sum(1 for d in dies if str(d.error_code).startswith("10"))
     fail_cnt = len(dies) - pass_cnt
     input_qty = len(dies)
     yld = (pass_cnt / input_qty * 100) if input_qty else 0
@@ -62,7 +63,7 @@ def render_sum_from_template(
     for d in dies:
         s = site_agg[d.site]
         s["counter"] += 1
-        if d.boot_on.upper() == "PASS":
+        if str(d.error_code).startswith("10"):
             s["pass"] += 1
         else:
             s["fail"] += 1
@@ -138,14 +139,19 @@ def render_sum_from_template(
     lines.append("")
     lines.append("******Rawdata list*******")
 
+    base_dt = datetime.strptime(start, "%Y/%m/%d %H:%M:%S")
     salt = f"{lot_no}:{stage}:{test_mode}"
     for i, d in enumerate(dies):
         die_id = mutate_die_id(d.die_id, f"{salt}:{i}")
         barcode = mutate_barcode(d.barcode, f"{salt}:{i}")
+        test_secs = float(re.sub(r"[^\d.]", "", d.test_time) or "1")
+        boot_dt = base_dt + timedelta(seconds=i * 3)
+        tested_dt = boot_dt + timedelta(seconds=max(test_secs, 1))
+        ts = lambda dt: dt.strftime("%H:%M:%S-%Y/%m/%d")
         lines.append(
             f"ErrorCode={d.error_code},SoftwareBin={d.software_bin},DieID={die_id},"
             f"Tj={d.tj},Temperature={d.temperature},Site={d.site},BiosTime={d.bios_time},"
-            f"TestTime={d.test_time},2DBarCode={barcode},BootOn={d.boot_on}"
+            f"TestTime={d.test_time},2DBarCode={barcode},booton={ts(boot_dt)},Tested={ts(tested_dt)}"
         )
 
     return "\n".join(lines) + "\n"

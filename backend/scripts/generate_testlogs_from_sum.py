@@ -58,8 +58,8 @@ def parse_test_time_seconds(raw: str) -> float:
         return 30.0
 
 
-def build_onetests(boot_on: str, error_code: int) -> list[dict]:
-    is_pass = boot_on.upper() == "PASS"
+def build_onetests(error_code: int) -> list[dict]:
+    is_pass = str(error_code).startswith("10")
     tests = []
     for i, name in enumerate(ONETEST_NAMES):
         if is_pass:
@@ -115,9 +115,8 @@ def render_log(
     test_start: str,
     die,
 ) -> str:
-    boot = die.boot_on.upper()
-    pf = "P" if boot == "PASS" else "F"
-    onetests = build_onetests(die.boot_on, die.error_code)
+    pf = "P" if str(die.error_code).startswith("10") else "F"
+    onetests = build_onetests(die.error_code)
     total_sec = parse_test_time_seconds(die.test_time)
     groups = die_id_groups(die.die_id, lot_no, die.barcode)
     log_start = sum_time_to_log_time(test_start)
