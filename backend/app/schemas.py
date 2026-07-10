@@ -258,6 +258,11 @@ class ImportResultOut(BaseModel):
     errors: List[dict] = []
 
 
+class ClearDatabaseOut(BaseModel):
+    deleted: dict[str, int]
+    message: str
+
+
 class MaterialRoundFailBinOut(BaseModel):
     code: int
     description: str

@@ -307,3 +307,5 @@ export const scanTestdata = (path?: string) =>
 export const scanTestlogs = (path?: string) =>
   api.post('/import/scan-logs', null, { params: { path } }).then((r) => r.data)
 export const getImportLogs = () => api.get('/import/status').then((r) => r.data)
+export const clearAllDatabase = () =>
+  api.post('/import/clear-all', null, { params: { confirm: true } }).then((r) => r.data)

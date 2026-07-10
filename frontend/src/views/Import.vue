@@ -44,6 +44,15 @@
         </el-card>
       </el-col>
     </el-row>
+    <el-card header="数据库维护" style="margin-top: 16px">
+      <p style="color: #606266; margin: 0 0 12px">
+        清空 SQLite 中全部 LOT、SUM、Log、芯片记录及导入日志。此操作不可恢复，清空后需重新扫描 logs 入库。
+      </p>
+      <el-button type="danger" :loading="clearing" @click="confirmClearAll">
+        清空全部数据
+      </el-button>
+    </el-card>
+
     <el-card header="导入日志" style="margin-top: 16px">
       <el-table :data="logs" size="small">
         <el-table-column prop="created_at" label="时间" width="180" />
@@ -57,13 +66,15 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import type { UploadFile } from 'element-plus'
-import { uploadFiles, scanTestdata, scanTestlogs, getImportLogs } from '../api'
+import { uploadFiles, scanTestdata, scanTestlogs, getImportLogs, clearAllDatabase } from '../api'
 
 const pendingFiles = ref<File[]>([])
 const uploading = ref(false)
 const scanning = ref(false)
 const scanningLogs = ref(false)
+const clearing = ref(false)
 const scanResult = ref<{ ok: string[]; errors: Array<{ file: string; error: string }> } | null>(null)
 const logScanResult = ref<{ ok: string[]; errors: Array<{ file: string; error: string }> } | null>(null)
 const logs = ref<Array<Record<string, unknown>>>([])
@@ -106,6 +117,37 @@ async function doScanLogs() {
 
 async function loadLogs() {
   logs.value = await getImportLogs()
+}
+
+async function confirmClearAll() {
+  try {
+    await ElMessageBox.confirm(
+      '将永久删除数据库中的全部 LOT、轮次、芯片、Log 及导入日志，且无法恢复。确定继续？',
+      '清空全部数据',
+      {
+        type: 'warning',
+        confirmButtonText: '确定清空',
+        cancelButtonText: '取消',
+        confirmButtonClass: 'el-button--danger',
+      },
+    )
+  } catch {
+    return
+  }
+
+  clearing.value = true
+  try {
+    const result = await clearAllDatabase()
+    scanResult.value = null
+    logScanResult.value = null
+    await loadLogs()
+    ElMessage.success(result.message || '数据库已清空')
+  } catch (e: unknown) {
+    const msg = e instanceof Error ? e.message : '清空失败'
+    ElMessage.error(msg)
+  } finally {
+    clearing.value = false
+  }
 }
 
 onMounted(loadLogs)

@@ -1,13 +1,14 @@
 import shutil
 from pathlib import Path
 
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
 from app.config import LOGS_DIR, UPLOAD_DIR
 from app.database import get_db
 from app.models import ImportLog, Lot
-from app.schemas import ImportLogOut, ImportResultOut
+from app.schemas import ClearDatabaseOut, ImportLogOut, ImportResultOut
+from app.services.db_clear import clear_all_data
 from app.services.importer import import_file, merge_and_persist_lot, scan_directory
 from app.services.log_importer import import_log_file, scan_log_directory
 
@@ -74,3 +75,17 @@ def import_status(limit: int = 50, db: Session = Depends(get_db)):
         .all()
     )
     return logs
+
+
+@router.post("/clear-all", response_model=ClearDatabaseOut)
+def clear_database(
+    confirm: bool = False,
+    db: Session = Depends(get_db),
+):
+    if not confirm:
+        raise HTTPException(status_code=400, detail="须传 confirm=true 以确认清空全部数据")
+    deleted = clear_all_data(db)
+    return ClearDatabaseOut(
+        deleted=deleted,
+        message=f"已清空数据库，共删除 {deleted['total']} 条记录",
+    )
