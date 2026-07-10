@@ -101,7 +101,7 @@
                 v-if="row.fail_count > 0"
                 link
                 type="danger"
-                @click="goLotFail(row.lot_no, row.stage)"
+                @click="goLotFail(row.lot_no, row.stage, row.round_key)"
               >{{ row.fail_count }}</el-button>
               <span v-else>0</span>
             </template>
@@ -167,8 +167,9 @@ function goLot(lotNo: string, stage: string) {
   router.push(lotDetailPath(lotNo, stage))
 }
 
-function goLotFail(lotNo: string, stage: string) {
+function goLotFail(lotNo: string, stage: string, roundKey?: string) {
   const params = new URLSearchParams({ stage, tab: 'dies', only_fail: '1' })
+  if (roundKey) params.set('round', roundKey)
   router.push(`/lots/${encodeURIComponent(lotNo)}?${params}`)
 }
 

@@ -116,7 +116,6 @@ def parse_sum_file(path: Path) -> ParsedSum:
 
     section = None
     current_site: Optional[SiteSummaryBlock] = None
-    header_skip = 0
     in_total_summary = False
 
     for line in lines:
@@ -128,20 +127,17 @@ def parse_sum_file(path: Path) -> ParsedSum:
                 current_site = SiteSummaryBlock(site_no=int(m.group(1)))
                 site_summaries.append(current_site)
                 section = "site_summary"
-                header_skip = 0
                 in_total_summary = False
             continue
 
         if "Total Site Summary" in stripped:
             section = "total_summary"
-            header_skip = 0
             in_total_summary = True
             current_site = None
             continue
 
         if "Site Counter" in stripped and "Yield" in stripped:
             section = "site_counter"
-            header_skip = 0
             continue
 
         if "Rawdata list" in stripped:
@@ -160,11 +156,9 @@ def parse_sum_file(path: Path) -> ParsedSum:
             continue
 
         if section in ("site_summary", "total_summary"):
-            if "Software" in stripped or "Category" in stripped:
-                header_skip = 2
+            if "Software" in stripped and "Hardware" in stripped:
                 continue
-            if header_skip > 0:
-                header_skip -= 1
+            if "Category" in stripped:
                 continue
             row = _parse_bin_row(stripped)
             if row:

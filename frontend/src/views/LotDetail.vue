@@ -206,6 +206,7 @@ async function load() {
     }
     if (route.query.tab) activeTab.value = route.query.tab as string
     if (route.query.only_fail === '1') onlyFail.value = true
+    if (route.query.round) dieRoundFilter.value = route.query.round as string
   } finally {
     loading.value = false
   }

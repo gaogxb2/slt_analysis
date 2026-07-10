@@ -5,7 +5,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.models import Lot
-from app.services.importer import compute_fail_breakdowns, compute_final_yield
+from app.services.importer import compute_fail_breakdowns, compute_final_yield, _fail_label_from_die
 from app.services.types import parse_round_order
 
 # 末尾 AA1/AB2/AC3/AD4/AE5 等 → 同一物料族前缀
@@ -63,7 +63,7 @@ def build_material_groups(
     stage: Optional[str] = None,
     material_keys: Optional[list[str]] = None,
 ) -> list[dict]:
-    from app.models import BinSummary, TestRound
+    from app.models import BinSummary, DieRecord, TestRound
 
     q = db.query(Lot)
     if lot_no:
@@ -101,6 +101,20 @@ def build_material_groups(
                     for b in bins
                     if b.description and b.description.upper() != "PASS"
                 ]
+                if not fail_bins and (tr.fail_count or 0) > 0:
+                    fail_agg: dict[tuple[int, str], int] = {}
+                    round_dies = (
+                        db.query(DieRecord)
+                        .filter(DieRecord.round_id == tr.id, DieRecord.boot_on == "FAIL")
+                        .all()
+                    )
+                    for d in round_dies:
+                        key = _fail_label_from_die(d)
+                        fail_agg[key] = fail_agg.get(key, 0) + 1
+                    fail_bins = [
+                        {"code": code, "description": desc, "count": cnt}
+                        for (code, desc), cnt in sorted(fail_agg.items(), key=lambda x: -x[1])
+                    ]
                 round_details.append({
                     "round_key": tr.round_key,
                     "input_qty": tr.input_qty,
