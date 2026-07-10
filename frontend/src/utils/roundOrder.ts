@@ -25,8 +25,11 @@ export function sortDieRecords<T extends { stage?: string; round_key?: string; l
   })
 }
 
-export function dieFinalStatus(rows: { boot_on?: string }[]): string {
+export function dieFinalStatus(rows: { boot_on?: string; error_code?: number }[]): string {
   if (!rows.length) return '未知'
   const last = rows[rows.length - 1]
+  if (last.error_code !== undefined && last.error_code !== null) {
+    return String(last.error_code).startsWith('10') ? 'PASS' : 'FAIL'
+  }
   return (last.boot_on || '').toUpperCase() === 'PASS' ? 'PASS' : 'FAIL'
 }

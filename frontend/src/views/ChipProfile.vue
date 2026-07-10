@@ -52,6 +52,10 @@
               {{ row.boot_on }}
             </el-tag>
             <div class="node-meta">Site {{ row.site }} · EC {{ row.error_code }}</div>
+            <div v-if="row.booton || row.tested" class="node-time">
+              <span v-if="row.booton">booton {{ row.booton }}</span>
+              <span v-if="row.tested"> · Tested {{ row.tested }}</span>
+            </div>
             <el-button
               v-if="row.chip_log_id"
               link
@@ -71,7 +75,15 @@
           <el-table-column prop="stage" label="STAGE" width="70" />
           <el-table-column prop="round_key" label="轮次" width="80" />
           <el-table-column prop="site" label="Site" width="60" />
-          <el-table-column prop="boot_on" label="BootOn" width="80" />
+          <el-table-column prop="booton" label="booton" min-width="150" />
+          <el-table-column prop="tested" label="Tested" min-width="150" />
+          <el-table-column prop="boot_on" label="结果" width="70">
+            <template #default="{ row }">
+              <el-tag :type="row.boot_on === 'PASS' ? 'success' : 'danger'" size="small">
+                {{ row.boot_on }}
+              </el-tag>
+            </template>
+          </el-table-column>
           <el-table-column prop="error_code" label="ErrorCode" width="90" />
           <el-table-column prop="software_bin" label="SW Bin" width="80" />
           <el-table-column prop="barcode" label="Barcode" width="130" />
@@ -171,6 +183,7 @@ watch(() => route.params.dieId, load)
 .node-round { font-weight: 600; font-size: 13px; }
 .node-lot { font-size: 12px; color: #606266; margin: 4px 0; }
 .node-meta { font-size: 11px; color: #909399; margin-top: 4px; }
+.node-time { font-size: 11px; color: #606266; margin-top: 4px; line-height: 1.4; }
 .no-log { font-size: 12px; color: #c0c4cc; }
 .arrow {
   position: absolute;

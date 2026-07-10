@@ -103,6 +103,8 @@ export interface DieRecord {
   error_code: number
   software_bin: number
   boot_on: string
+  booton?: string
+  tested?: string
   tj?: string
   bios_time?: string
   test_time?: string
@@ -117,6 +119,8 @@ export interface RoundDie {
   barcode?: string
   site: number
   boot_on: string
+  booton?: string
+  tested?: string
   error_code: number
   software_bin: number
   test_mode?: string
@@ -193,6 +197,8 @@ export interface ChipLogDetail {
   die_ids: ChipLogDieId[]
   sum_compare?: {
     boot_on: string
+    booton?: string
+    tested?: string
     software_bin: number
     site: number
     test_mode: string

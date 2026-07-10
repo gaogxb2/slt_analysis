@@ -229,7 +229,7 @@ Site No     Site Counter    Pass   Fail   Site Yield(%)
 每颗芯片一条记录，字段以逗号分隔，采用 `Key=Value` 形式：
 
 ```
-ErrorCode={code},SoftwareBin={bin},DieID={id},Tj={tj},Temperature={temp},Site={site},BiosTime={bios},TestTime={test},2DBarCode={barcode},BootOn={result}
+ErrorCode={code},SoftwareBin={bin},DieID={id},Tj={tj},Temperature={temp},Site={site},BiosTime={bios},TestTime={test},2DBarCode={barcode},booton={booton},Tested={tested}
 ```
 
 ### 7.3 各字段规则
@@ -245,7 +245,10 @@ ErrorCode={code},SoftwareBin={bin},DieID={id},Tj={tj},Temperature={temp},Site={s
 | BiosTime | 浮点数 + `s` 后缀 | `121.3s` | BIOS 启动耗时（秒） |
 | TestTime | 浮点数（无后缀） | `31.9` | 测试耗时（秒） |
 | 2DBarCode | 数字字符串 | `026577442871` | 二维条码，12 位数字 |
-| BootOn | 枚举字符串 | `PASS` / `FAIL` | 启动结果 |
+| booton | 时间-日期 | `13:13:13-2026/01/01` | 启动时间（HH:MM:SS-YYYY/MM/DD） |
+| Tested | 时间-日期 | `13:13:14-2026/01/01` | 测试完成时间 |
+
+Pass/Fail 由 **ErrorCode** 判定：`10` 开头为 Pass（如 `1000`），否则 Fail（如 `4000`）。
 
 ### 7.4 ErrorCode 与 Bin 对应关系
 
@@ -259,8 +262,8 @@ ErrorCode={code},SoftwareBin={bin},DieID={id},Tj={tj},Temperature={temp},Site={s
 ### 7.5 一致性约束
 
 - Rawdata 总行数 = `Input Testing QTY`
-- `BootOn=PASS` 的记录数 = `Total Pass`
-- `BootOn=FAIL` 的记录数 = `Total Fail`
+- ErrorCode 以 `10` 开头的记录数 = `Total Pass`
+- 其余 ErrorCode 的记录数 = `Total Fail`
 - 按 Site 分组统计应与 Site Summary、Site Counter 区块数据一致
 - 按 SoftwareBin / ErrorCode 分组统计应与 Total Site Summary 一致
 

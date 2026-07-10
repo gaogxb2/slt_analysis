@@ -120,6 +120,8 @@ class DieRecord(Base):
     error_code = Column(Integer)
     software_bin = Column(Integer)
     boot_on = Column(String(16))
+    booton = Column(String(32))
+    tested = Column(String(32))
     tj = Column(String(64))
     bios_time = Column(String(32))
     test_time = Column(String(32))

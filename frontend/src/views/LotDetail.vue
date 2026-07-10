@@ -81,7 +81,9 @@
               </template>
             </el-table-column>
             <el-table-column prop="site" label="Site" width="60" />
-            <el-table-column prop="boot_on" label="BootOn" width="80" />
+            <el-table-column prop="booton" label="booton" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="tested" label="Tested" min-width="140" show-overflow-tooltip />
+            <el-table-column prop="boot_on" label="结果" width="70" />
             <el-table-column prop="error_code" label="ErrorCode" width="90" />
             <el-table-column prop="log_status" label="Log" width="90">
               <template #default="{ row }">

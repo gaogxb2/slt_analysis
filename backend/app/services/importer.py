@@ -186,6 +186,8 @@ def _persist_round(db: Session, lot: Lot, merged: MergedRound, source_parsed: Li
                 error_code=d.error_code,
                 software_bin=d.software_bin,
                 boot_on=d.boot_on,
+                booton=d.booton or "",
+                tested=d.tested or "",
                 tj=d.tj,
                 bios_time=d.bios_time,
                 test_time=d.test_time,

@@ -81,7 +81,9 @@ const compareRows = computed(() => {
   const s = detail.value.sum_compare
   const d = detail.value
   return [
-    { field: 'BootOn/P_F', sum: s.boot_on, log: d.pf },
+    { field: 'booton', sum: s.booton || '—', log: '—' },
+    { field: 'Tested', sum: s.tested || '—', log: d.test_time || '—' },
+    { field: 'Pass/Fail', sum: s.boot_on, log: d.pf },
     { field: 'Bin', sum: String(s.software_bin), log: String(d.soft_bin) },
     { field: 'Site', sum: String(s.site), log: String(d.site) },
     { field: 'Flow', sum: s.test_mode, log: d.test_mode },

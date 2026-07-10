@@ -122,6 +122,8 @@ class DieRecordOut(BaseModel):
     error_code: int
     software_bin: int
     boot_on: str
+    booton: Optional[str] = None
+    tested: Optional[str] = None
     tj: Optional[str] = None
     bios_time: Optional[str] = None
     test_time: Optional[str] = None
@@ -153,6 +155,8 @@ class ChipLogDieIdOut(BaseModel):
 
 class SumCompareOut(BaseModel):
     boot_on: str
+    booton: Optional[str] = None
+    tested: Optional[str] = None
     software_bin: int
     site: int
     test_mode: str
@@ -225,6 +229,8 @@ class RoundDieOut(BaseModel):
     barcode: Optional[str] = None
     site: int
     boot_on: str
+    booton: Optional[str] = None
+    tested: Optional[str] = None
     error_code: int
     software_bin: int
     test_mode: Optional[str] = None

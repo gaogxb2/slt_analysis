@@ -46,6 +46,8 @@ def search_dies(
                 error_code=d.error_code,
                 software_bin=d.software_bin,
                 boot_on=d.boot_on,
+                booton=d.booton,
+                tested=d.tested,
                 tj=d.tj,
                 bios_time=d.bios_time,
                 test_time=d.test_time,

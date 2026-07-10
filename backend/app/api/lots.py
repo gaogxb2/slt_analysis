@@ -307,6 +307,8 @@ def get_round_dies(
                 barcode=d.barcode,
                 site=d.site or 0,
                 boot_on=d.boot_on or "",
+                booton=d.booton,
+                tested=d.tested,
                 error_code=d.error_code or 0,
                 software_bin=d.software_bin or 0,
                 test_mode=d.test_mode,

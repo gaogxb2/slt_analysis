@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 from typing import List, Optional
 
+from app.services.log_utils import error_code_to_boot_on
 from app.services.types import (
     BinRow,
     DieRow,
@@ -80,8 +81,13 @@ def _parse_die_line(line: str) -> Optional[DieRow]:
             k, v = item.split("=", 1)
             parts[k] = v
     try:
+        error_code = int(parts.get("ErrorCode", 0))
+        booton_raw = parts.get("booton") or parts.get("BootOn") or parts.get("bootOn") or ""
+        tested_raw = parts.get("Tested") or parts.get("tested") or ""
+        if booton_raw.upper() in ("PASS", "FAIL"):
+            booton_raw = ""
         return DieRow(
-            error_code=int(parts.get("ErrorCode", 0)),
+            error_code=error_code,
             software_bin=int(parts.get("SoftwareBin", 0)),
             die_id=parts.get("DieID", ""),
             tj=parts.get("Tj", ""),
@@ -90,7 +96,9 @@ def _parse_die_line(line: str) -> Optional[DieRow]:
             bios_time=parts.get("BiosTime", ""),
             test_time=parts.get("TestTime", ""),
             barcode=parts.get("2DBarCode", ""),
-            boot_on=parts.get("BootOn", ""),
+            boot_on=error_code_to_boot_on(error_code),
+            booton=booton_raw,
+            tested=tested_raw,
         )
     except (ValueError, KeyError):
         return None

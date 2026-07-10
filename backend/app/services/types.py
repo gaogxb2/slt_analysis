@@ -56,6 +56,8 @@ class DieRow:
     test_time: str
     barcode: str
     boot_on: str
+    booton: str = ""
+    tested: str = ""
 
 
 @dataclass

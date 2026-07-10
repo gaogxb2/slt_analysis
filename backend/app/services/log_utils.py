@@ -17,6 +17,15 @@ def normalize_test_time(value: str) -> str:
     return s
 
 
+def error_code_is_pass(error_code: int) -> bool:
+    """ErrorCode 以 10 开头为 Pass，否则 Fail。"""
+    return str(error_code).startswith("10")
+
+
+def error_code_to_boot_on(error_code: int) -> str:
+    return "PASS" if error_code_is_pass(error_code) else "FAIL"
+
+
 def boot_on_to_pf(boot_on: str) -> str:
     if not boot_on:
         return ""

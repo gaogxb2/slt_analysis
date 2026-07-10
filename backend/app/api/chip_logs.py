@@ -28,6 +28,8 @@ def _chip_log_detail(db: Session, cl: ChipLog, lot: Lot) -> ChipLogDetailOut:
         if die:
             sum_compare = SumCompareOut(
                 boot_on=die.boot_on or "",
+                booton=die.booton,
+                tested=die.tested,
                 software_bin=die.software_bin or 0,
                 site=die.site or 0,
                 test_mode=die.test_mode or "",
