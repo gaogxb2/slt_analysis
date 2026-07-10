@@ -124,7 +124,7 @@ def download_repo() -> None:
     driver = webdriver.Chrome(options=options)
     try:
         driver.get(GITHUB_ZIP_URL)
-        downloaded = _wait_for_zip_download(INSTALL_ROOT, DOWNLOAD_TIMEOUT)
+        downloaded = _wait_for_zip_download(INSTALL_ROOT, DOWNLOAD_TIMEOUT, started_at)
         if downloaded.resolve() != ZIP_PATH.resolve():
             if ZIP_PATH.exists():
                 ZIP_PATH.unlink()
