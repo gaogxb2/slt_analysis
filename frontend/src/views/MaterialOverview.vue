@@ -74,6 +74,8 @@
           </el-tag>
         </div>
 
+        <YieldCategoryCharts :material-key="g.material_key" :members="g.members" />
+
         <el-row :gutter="16" style="margin-top: 16px">
           <el-col :span="12">
             <div :ref="(el) => setYieldRef(g.material_key, el as HTMLElement)" style="height: 300px" />
@@ -129,6 +131,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import * as echarts from 'echarts'
 import { getMaterialCatalog, getMaterialGroups, type MaterialGroup, type MaterialGroupSummary } from '../api'
+import YieldCategoryCharts from '../components/YieldCategoryCharts.vue'
 import { lotDetailPath } from '../utils/material'
 
 const route = useRoute()
