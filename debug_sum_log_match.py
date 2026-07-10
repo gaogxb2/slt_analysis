@@ -174,7 +174,26 @@ def _load_log_rows(directory: Path, out: IO[str]) -> List[LogRow]:
         if not parsed.lot_no:
             _log(out, "    [警告] 缺少 CUSTOMER LOT ID")
         if not die_raw:
-            _log(out, "    [警告] 缺少第一组 DIEID_STR")
+            _log(out, "    [警告] 缺少第一组 DIEID_STR（解析结果为空）")
+            chip_lines = []
+            in_chip = False
+            try:
+                for ln in path.read_text(encoding="utf-8", errors="replace").splitlines():
+                    s = ln.strip()
+                    if s.upper().replace(" ", "") in ("[CHIPINFO]", "[CHIPINFO]"):
+                        in_chip = True
+                    if in_chip and ("DIEID" in s.upper() or s.upper().replace(" ", "") in ("[CHIPEND]", "[CHIPEND]")):
+                        chip_lines.append(ln.rstrip())
+                    if s.upper().replace(" ", "") in ("[CHIPEND]", "[CHIPEND]"):
+                        break
+            except OSError:
+                pass
+            if chip_lines:
+                _log(out, "    [CHIPINFO 相关原始行]")
+                for ln in chip_lines[:12]:
+                    _log(out, f"      {ln}")
+            else:
+                _log(out, "    未找到 [CHIPINFO] 区块或 DIEID 行；请检查是否有 [CHIP END]、键名是否为 DIEID_STR")
         rows.append(
             LogRow(
                 source_file=str(rel),
