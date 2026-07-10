@@ -10,8 +10,8 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 from app.services.sum_parser import parse_sum_file
 
-TESTDATA = ROOT / "testdata"
-TEMPLATE = TESTDATA / "testsum_M2+1.SUM"
+LOGS_DIR = ROOT / "logs"
+TEMPLATE = LOGS_DIR / "testsum_M2+1.SUM"
 
 
 def stage_to_mode_prefix(stage: str) -> str:
@@ -154,7 +154,7 @@ def render_sum_from_template(
 def clone_sum(lot_no: str, stage: str, test_mode: str, outfile: str, **kwargs) -> Path:
     parsed = parse_sum_file(TEMPLATE)
     content = render_sum_from_template(parsed, lot_no, stage, test_mode, **kwargs)
-    path = TESTDATA / outfile
+    path = LOGS_DIR / outfile
     path.write_text(content, encoding="utf-8")
     return path
 

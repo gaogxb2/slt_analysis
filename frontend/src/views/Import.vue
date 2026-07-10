@@ -21,10 +21,10 @@
       </el-col>
       <el-col :span="12">
         <el-card header="扫描目录">
-          <p>扫描项目 testdata 目录下的所有 .SUM 文件</p>
-          <el-button type="primary" :loading="scanning" @click="doScan">扫描 testdata</el-button>
-          <p style="margin-top: 16px">扫描 testdata/testlogs 目录下的所有 .log 文件</p>
-          <el-button type="primary" :loading="scanningLogs" @click="doScanLogs">扫描 testlogs</el-button>
+          <p>递归扫描项目 logs 目录下的所有 .SUM 文件</p>
+          <el-button type="primary" :loading="scanning" @click="doScan">扫描 SUM</el-button>
+          <p style="margin-top: 16px">递归扫描项目 logs 目录下的所有 .log 文件</p>
+          <el-button type="primary" :loading="scanningLogs" @click="doScanLogs">扫描 Log</el-button>
           <el-alert v-if="scanResult" :title="`SUM 成功 ${scanResult.ok?.length || 0} 个`" type="success" style="margin-top: 12px" />
           <el-alert v-if="logScanResult" :title="`Log 成功 ${logScanResult.ok?.length || 0} 个`" type="success" style="margin-top: 8px" />
           <el-alert

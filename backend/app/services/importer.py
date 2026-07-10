@@ -201,17 +201,17 @@ def scan_directory(db: Session, directory: Path) -> dict:
     results = {"ok": [], "errors": []}
     seen_modes: set = set()
 
-    for path in sorted(directory.glob("*.SUM")):
-        # Skip duplicate testsum.SUM if testsum_M2+1.SUM exists with same test mode
+    for path in sorted(directory.rglob("*.SUM")):
+        rel = str(path.relative_to(directory))
         lot, parsed, status = import_file(db, path)
         if status != "ok" or not lot or not parsed:
-            results["errors"].append({"file": path.name, "error": status})
+            results["errors"].append({"file": rel, "error": status})
             continue
         key = (lot.id, parsed.test_mode)
         if key in seen_modes:
-            results["errors"].append({"file": path.name, "error": "duplicate test_mode skipped merge"})
+            results["errors"].append({"file": rel, "error": "duplicate test_mode skipped merge"})
         seen_modes.add(key)
-        results["ok"].append(path.name)
+        results["ok"].append(rel)
 
     lot_ids = {row[0] for row in db.query(Lot.id).all()}
     for lot_id in lot_ids:

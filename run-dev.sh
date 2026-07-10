@@ -3,7 +3,7 @@
 #
 # 用法:
 #   ./run-dev.sh           开发模式（库不存在时自动 seed）
-#   ./run-dev.sh --seed    强制重新扫描 testdata/testlogs 入库后再启动
+#   ./run-dev.sh --seed    强制重新递归扫描 logs 入库后再启动
 #   ./run-dev.sh --backend 仅启动后端
 #   ./run-dev.sh --seed-only  仅执行 SQLite 入库，不启动服务
 #
@@ -42,7 +42,7 @@ fi
 
 # ---------- 1. SQLite：建表 + 扫描 SUM/Log 入库 ----------
 run_sql_seed() {
-  echo "==> [SQLite] 初始化数据库并扫描 testdata 入库..."
+  echo "==> [SQLite] 初始化数据库并递归扫描 logs 入库..."
   echo "    数据库文件: $DB_FILE"
   cd "$ROOT/backend"
   $PYTHON seed.py

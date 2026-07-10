@@ -34,5 +34,5 @@ npm install
 
 echo ""
 echo "==> 依赖安装完成"
-echo "    首次使用可执行: cd backend && $PYTHON seed.py  扫描 testdata 入库"
+echo "    首次使用可执行: cd backend && $PYTHON seed.py  递归扫描 logs 入库"
 echo "    启动服务: ./start.sh dev"

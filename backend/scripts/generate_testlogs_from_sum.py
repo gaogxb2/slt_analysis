@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从 testdata/*.SUM 批量生成每颗芯片的 testlog 文件。"""
+"""从 logs/**/*.SUM 批量生成每颗芯片的 testlog 文件。"""
 import hashlib
 import re
 import sys
@@ -10,8 +10,8 @@ sys.path.insert(0, str(ROOT / "backend"))
 
 from app.services.sum_parser import parse_sum_file
 
-TESTDATA = ROOT / "testdata"
-OUT_DIR = TESTDATA / "testlogs"
+LOGS_DIR = ROOT / "logs"
+OUT_DIR = LOGS_DIR
 
 ONETEST_NAMES = ("AAA_TEST", "BBB_TEST")
 
@@ -174,7 +174,7 @@ def should_skip_sum(path: Path) -> bool:
 
 
 def main():
-    sum_files = sorted(TESTDATA.glob("*.SUM"))
+    sum_files = sorted(LOGS_DIR.rglob("*.SUM"))
     OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     total_logs = 0

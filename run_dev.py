@@ -5,7 +5,7 @@
   python run_dev.py              开发模式（库不存在时自动 seed）
   python run_dev.py dev          同上
   python run_dev.py --seed       强制重新入库后再启动
-  python run_dev.py seed         仅扫描 testdata/testlogs 入库
+  python run_dev.py seed         仅递归扫描 logs 入库
   python run_dev.py backend      仅启动后端
   python run_dev.py prod         构建前端并由后端单端口托管
 
@@ -127,7 +127,7 @@ def _popen(cmd: list[str], *, cwd: Path) -> subprocess.Popen:
 
 
 def run_seed() -> None:
-    print("==> [SQLite] 初始化数据库并扫描 testdata 入库...")
+    print("==> [SQLite] 初始化数据库并递归扫描 logs 入库...")
     print(f"    数据库文件: {DB_FILE}")
     subprocess.run([PYTHON, "seed.py"], cwd=str(BACKEND_DIR), check=True)
     print("==> [SQLite] 入库完成")
@@ -243,7 +243,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--seed",
         action="store_true",
-        help="开发模式下强制重新扫描 testdata 入库",
+        help="开发模式下强制重新递归扫描 logs 入库",
     )
     return parser
 

@@ -5,8 +5,10 @@ PROJECT_ROOT = BASE_DIR.parent
 
 DATA_DIR = BASE_DIR / "data"
 UPLOAD_DIR = DATA_DIR / "uploads"
-TESTDATA_DIR = PROJECT_ROOT / "testdata"
-TESTLOG_DIR = PROJECT_ROOT / "testdata" / "testlogs"
+LOGS_DIR = PROJECT_ROOT / "logs"
+# 兼容旧引用
+TESTDATA_DIR = LOGS_DIR
+TESTLOG_DIR = LOGS_DIR
 
 DATABASE_URL = f"sqlite:///{DATA_DIR / 'slt.db'}"
 

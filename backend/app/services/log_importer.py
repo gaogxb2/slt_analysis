@@ -187,7 +187,7 @@ def scan_log_directory(db: Session, directory: Path) -> dict:
     for path in sorted(directory.rglob("*.log")):
         lot, _, status = import_log_file(db, path)
         if status == "ok" and lot:
-            results["ok"].append(path.name)
+            results["ok"].append(str(path.relative_to(directory)))
             lot_ids.add(lot.id)
         else:
             results["errors"].append({"file": str(path.relative_to(directory)), "error": status})

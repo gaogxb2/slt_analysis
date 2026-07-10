@@ -5,7 +5,7 @@
 #   ./start.sh dev      开发模式：后端 8000 + 前端 5173（默认）
 #   ./start.sh backend  仅启动后端
 #   ./start.sh prod     生产模式：构建前端并由后端单端口 8000 托管
-#   ./start.sh seed     扫描 testdata 入库（不启动服务）
+#   ./start.sh seed     递归扫描 logs 入库（不启动服务）
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
@@ -25,7 +25,7 @@ fi
 cd "$ROOT/backend"
 
 run_seed() {
-  echo "==> 扫描 testdata 入库..."
+  echo "==> 递归扫描 logs 入库..."
   $PYTHON seed.py
 }
 

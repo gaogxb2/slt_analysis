@@ -4,7 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
-from app.config import TESTDATA_DIR, TESTLOG_DIR, UPLOAD_DIR
+from app.config import LOGS_DIR, UPLOAD_DIR
 from app.database import get_db
 from app.models import ImportLog, Lot
 from app.schemas import ImportLogOut, ImportResultOut
@@ -50,7 +50,7 @@ def scan_testdata(
     path: str | None = None,
     db: Session = Depends(get_db),
 ):
-    directory = Path(path) if path else TESTDATA_DIR
+    directory = Path(path) if path else LOGS_DIR
     raw = scan_directory(db, directory)
     return ImportResultOut(ok=raw["ok"], errors=raw["errors"])
 
@@ -60,7 +60,7 @@ def scan_testlogs(
     path: str | None = None,
     db: Session = Depends(get_db),
 ):
-    directory = Path(path) if path else TESTLOG_DIR
+    directory = Path(path) if path else LOGS_DIR
     raw = scan_log_directory(db, directory)
     return ImportResultOut(ok=raw["ok"], errors=raw["errors"])
 
