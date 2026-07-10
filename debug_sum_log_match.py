@@ -195,9 +195,17 @@ def _load_log_rows(directory: Path, out: IO[str]) -> List[LogRow]:
                 pass
             if markers:
                 _log(out, f"    检测到区块标记: {markers}")
-                compact_markers = [re.sub(r"\s+", "", m.upper()) for m in markers]
-                if "[CHIPEND]" in compact_markers:
-                    _log(out, "    [提示] 若结束标记为 [CHIPEND]（无空格），需使用最新版解析器")
+            # 检测 ONETEST 是否未正常结束
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+                line_tags = [re.sub(r"\s+", "", ln.upper()) for ln in text.splitlines()]
+                has_onetest = "[ONETEST]" in line_tags
+                has_onetest_end = "[ONETESTEND]" in line_tags
+                has_chipinfo = "[CHIPINFO]" in line_tags
+                if has_onetest and has_chipinfo and not has_onetest_end:
+                    _log(out, "    [提示] 存在 [ONETEST] 但缺少 [ONETEST END]，旧版解析器会跳过 CHIPINFO 内字段")
+            except OSError:
+                pass
             if chip_lines:
                 _log(out, "    [CHIPINFO 相关原始行]")
                 for ln in chip_lines[:12]:

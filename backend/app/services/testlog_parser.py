@@ -22,6 +22,27 @@ def _chip_section_marker(line: str) -> Optional[str]:
     return None
 
 
+def _onetest_end_marker(line: str) -> bool:
+    return re.sub(r"\s+", "", line.strip().upper()) == "[ONETESTEND]"
+
+
+def _flush_onetest(
+    current_onetest: dict,
+    onetests: list[OneTestRow],
+) -> None:
+    if not current_onetest:
+        return
+    onetests.append(
+        OneTestRow(
+            test_txt=current_onetest.get("TEST_TXT", ""),
+            pattern=current_onetest.get("PATTERN", ""),
+            result=current_onetest.get("RESULT", ""),
+            pf=current_onetest.get("P_F", "P").upper(),
+            test_time_ms=_parse_int(current_onetest.get("TEST_TIME", "0")),
+        )
+    )
+
+
 def _parse_int(s: str) -> int:
     return int(re.sub(r"[^\d]", "", s) or "0")
 
@@ -80,31 +101,24 @@ def parse_testlog_file(path: Path) -> ParsedLog:
             in_onetest = True
             current_onetest = {}
             continue
-        if stripped == "[ONETEST END]":
-            if current_onetest:
-                onetests.append(
-                    OneTestRow(
-                        test_txt=current_onetest.get("TEST_TXT", ""),
-                        pattern=current_onetest.get("PATTERN", ""),
-                        result=current_onetest.get("RESULT", ""),
-                        pf=current_onetest.get("P_F", "P").upper(),
-                        test_time_ms=_parse_int(current_onetest.get("TEST_TIME", "0")),
-                    )
-                )
+        if stripped == "[ONETEST END]" or _onetest_end_marker(stripped):
+            _flush_onetest(current_onetest, onetests)
             in_onetest = False
             current_onetest = {}
             continue
-        if stripped == "[CHIPINFO]":
-            section = "chipinfo"
-            continue
         chip_marker = _chip_section_marker(stripped)
-        if chip_marker == "chipinfo":
+        if stripped == "[CHIPINFO]" or chip_marker == "chipinfo":
+            if in_onetest:
+                _flush_onetest(current_onetest, onetests)
+                current_onetest = {}
+                in_onetest = False
             section = "chipinfo"
             continue
-        if stripped == "[CHIP END]":
-            _append_die_group(current_die, die_groups)
-            break
-        if chip_marker == "chip_end":
+        if stripped == "[CHIP END]" or chip_marker == "chip_end":
+            if in_onetest:
+                _flush_onetest(current_onetest, onetests)
+                current_onetest = {}
+                in_onetest = False
             _append_die_group(current_die, die_groups)
             break
 
