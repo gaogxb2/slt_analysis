@@ -12,6 +12,16 @@ def _parse_kv(line: str) -> Optional[tuple[str, str]]:
     return m.group(1).strip(), m.group(2).strip()
 
 
+def _chip_section_marker(line: str) -> Optional[str]:
+    """CHIPINFO / CHIP END 标记容错（仅合并标记内空格，如 [CHIPEND]、[CHIP INFO]）。"""
+    compact = re.sub(r"\s+", "", line.strip().upper())
+    if compact == "[CHIPINFO]":
+        return "chipinfo"
+    if compact == "[CHIPEND]":
+        return "chip_end"
+    return None
+
+
 def _parse_int(s: str) -> int:
     return int(re.sub(r"[^\d]", "", s) or "0")
 
@@ -87,7 +97,14 @@ def parse_testlog_file(path: Path) -> ParsedLog:
         if stripped == "[CHIPINFO]":
             section = "chipinfo"
             continue
+        chip_marker = _chip_section_marker(stripped)
+        if chip_marker == "chipinfo":
+            section = "chipinfo"
+            continue
         if stripped == "[CHIP END]":
+            _append_die_group(current_die, die_groups)
+            break
+        if chip_marker == "chip_end":
             _append_die_group(current_die, die_groups)
             break
 

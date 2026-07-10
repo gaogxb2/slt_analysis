@@ -11,6 +11,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from dataclasses import dataclass
 from datetime import datetime
@@ -176,18 +177,27 @@ def _load_log_rows(directory: Path, out: IO[str]) -> List[LogRow]:
         if not die_raw:
             _log(out, "    [警告] 缺少第一组 DIEID_STR（解析结果为空）")
             chip_lines = []
+            markers: list[str] = []
             in_chip = False
             try:
                 for ln in path.read_text(encoding="utf-8", errors="replace").splitlines():
                     s = ln.strip()
-                    if s.upper().replace(" ", "") in ("[CHIPINFO]", "[CHIPINFO]"):
+                    compact = re.sub(r"\s+", "", s.upper())
+                    if compact in ("[CHIPINFO]", "[CHIPEND]"):
+                        markers.append(s)
+                    if compact == "[CHIPINFO]":
                         in_chip = True
-                    if in_chip and ("DIEID" in s.upper() or s.upper().replace(" ", "") in ("[CHIPEND]", "[CHIPEND]")):
+                    if in_chip and ("DIEID" in s.upper() or compact == "[CHIPEND]"):
                         chip_lines.append(ln.rstrip())
-                    if s.upper().replace(" ", "") in ("[CHIPEND]", "[CHIPEND]"):
+                    if compact == "[CHIPEND]":
                         break
             except OSError:
                 pass
+            if markers:
+                _log(out, f"    检测到区块标记: {markers}")
+                compact_markers = [re.sub(r"\s+", "", m.upper()) for m in markers]
+                if "[CHIPEND]" in compact_markers:
+                    _log(out, "    [提示] 若结束标记为 [CHIPEND]（无空格），需使用最新版解析器")
             if chip_lines:
                 _log(out, "    [CHIPINFO 相关原始行]")
                 for ln in chip_lines[:12]:
