@@ -3,3 +3,4 @@ uvicorn[standard]==0.38.0
 sqlalchemy==2.0.51
 pydantic==2.12.5
 python-multipart==0.0.20
+selenium==4.27.1

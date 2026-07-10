@@ -12,6 +12,11 @@
 
 环境变量:
   BACKEND_PORT=8000   FRONTEND_PORT=5173
+  DOWNLOAD_TIMEOUT=600  Chrome 下载等待秒数
+
+依赖:
+  pip install selenium
+  本机已安装 Google Chrome（Selenium 4 会自动匹配 ChromeDriver）
 """
 from __future__ import annotations
 
@@ -22,15 +27,15 @@ import signal
 import subprocess
 import sys
 import time
+import shutil
 import zipfile
 from pathlib import Path
-from urllib.error import URLError
-from urllib.request import urlopen
 
 GITHUB_ZIP_URL = "https://github.com/gaogxb2/slt_analysis/archive/refs/heads/main.zip"
 INSTALL_ROOT = Path("D:/")
 ZIP_PATH = INSTALL_ROOT / "slt_analysis-main.zip"
 PROJECT_DIR = INSTALL_ROOT / "slt_analysis-main"
+DOWNLOAD_TIMEOUT = int(os.environ.get("DOWNLOAD_TIMEOUT", "600"))
 
 ROOT = PROJECT_DIR
 BACKEND_DIR = ROOT / "backend"
@@ -49,17 +54,72 @@ def _configure_paths(root: Path) -> None:
     DB_FILE = BACKEND_DIR / "data" / "slt.db"
 
 
+def _wait_for_zip_download(directory: Path, timeout: int) -> Path:
+    print(f"    等待 Chrome 下载完成（最多 {timeout}s）...")
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        if any(directory.glob("*.crdownload")):
+            time.sleep(2)
+            continue
+        candidates = sorted(
+            [p for p in directory.glob("*.zip") if p.name.startswith("slt_analysis")],
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+        for path in candidates:
+            if path.stat().st_size > 1024:
+                return path
+        time.sleep(2)
+    raise SystemExit(
+        f"Chrome 下载超时（{timeout}s）。"
+        "请确认已安装 Chrome、D 盘可写，或加大 DOWNLOAD_TIMEOUT。"
+    )
+
+
 def download_repo() -> None:
     INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
-    print(f"==> [下载] {GITHUB_ZIP_URL}")
-    print(f"    保存到: {ZIP_PATH}")
+    print(f"==> [下载] 使用 Chrome WebDriver: {GITHUB_ZIP_URL}")
+    print(f"    保存目录: {INSTALL_ROOT}")
+
     try:
-        with urlopen(GITHUB_ZIP_URL, timeout=120) as resp:
-            data = resp.read()
-    except URLError as e:
-        raise SystemExit(f"下载失败: {e}") from e
-    ZIP_PATH.write_bytes(data)
-    print(f"==> [下载] 完成 ({len(data):,} 字节)")
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+    except ImportError as e:
+        raise SystemExit("请先安装 selenium: pip install selenium") from e
+
+    if ZIP_PATH.exists():
+        ZIP_PATH.unlink()
+
+    options = Options()
+    download_dir = str(INSTALL_ROOT.resolve())
+    options.add_experimental_option(
+        "prefs",
+        {
+            "download.default_directory": download_dir,
+            "download.prompt_for_download": False,
+            "download.directory_upgrade": True,
+            "safebrowsing.enabled": True,
+        },
+    )
+    options.add_argument("--headless=new")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+
+    driver = webdriver.Chrome(options=options)
+    try:
+        driver.get(GITHUB_ZIP_URL)
+        downloaded = _wait_for_zip_download(INSTALL_ROOT, DOWNLOAD_TIMEOUT)
+        if downloaded.resolve() != ZIP_PATH.resolve():
+            if ZIP_PATH.exists():
+                ZIP_PATH.unlink()
+            shutil.move(str(downloaded), str(ZIP_PATH))
+        size = ZIP_PATH.stat().st_size
+        print(f"==> [下载] 完成 ({size:,} 字节) -> {ZIP_PATH}")
+    except Exception as e:
+        raise SystemExit(f"Chrome 下载失败: {e}") from e
+    finally:
+        driver.quit()
 
 
 def extract_repo() -> Path:
