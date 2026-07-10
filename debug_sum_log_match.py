@@ -193,7 +193,7 @@ def _load_log_rows(directory: Path, out: IO[str]) -> List[LogRow]:
                 for ln in chip_lines[:12]:
                     _log(out, f"      {ln}")
             else:
-                _log(out, "    未找到 [CHIPINFO] 区块或 DIEID 行；请检查是否有 [CHIP END]、键名是否为 DIEID_STR")
+                _log(out, "    未找到 [CHIPINFO] 区块或 DIEID_STR 行")
         rows.append(
             LogRow(
                 source_file=str(rel),
