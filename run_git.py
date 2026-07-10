@@ -54,7 +54,22 @@ def _configure_paths(root: Path) -> None:
     DB_FILE = BACKEND_DIR / "data" / "slt.db"
 
 
-def _wait_for_zip_download(directory: Path, timeout: int) -> Path:
+def _cleanup_old_downloads() -> None:
+    """下载前清理旧 zip/临时文件，避免误判为下载成功。"""
+    INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
+    removed: list[str] = []
+    for pattern in ("slt_analysis*.zip", "*.crdownload"):
+        for path in INSTALL_ROOT.glob(pattern):
+            try:
+                path.unlink()
+                removed.append(path.name)
+            except OSError:
+                pass
+    if removed:
+        print(f"    已删除旧文件: {', '.join(removed)}")
+
+
+def _wait_for_zip_download(directory: Path, timeout: int, started_at: float) -> Path:
     print(f"    等待 Chrome 下载完成（最多 {timeout}s）...")
     deadline = time.time() + timeout
     while time.time() < deadline:
@@ -67,7 +82,8 @@ def _wait_for_zip_download(directory: Path, timeout: int) -> Path:
             reverse=True,
         )
         for path in candidates:
-            if path.stat().st_size > 1024:
+            st = path.stat()
+            if st.st_size > 1024 and st.st_mtime >= started_at - 1:
                 return path
         time.sleep(2)
     raise SystemExit(
@@ -77,7 +93,7 @@ def _wait_for_zip_download(directory: Path, timeout: int) -> Path:
 
 
 def download_repo() -> None:
-    INSTALL_ROOT.mkdir(parents=True, exist_ok=True)
+    _cleanup_old_downloads()
     print(f"==> [下载] 使用 Chrome WebDriver: {GITHUB_ZIP_URL}")
     print(f"    保存目录: {INSTALL_ROOT}")
 
@@ -87,11 +103,10 @@ def download_repo() -> None:
     except ImportError as e:
         raise SystemExit("请先安装 selenium: pip install selenium") from e
 
-    if ZIP_PATH.exists():
-        ZIP_PATH.unlink()
+    started_at = time.time()
+    download_dir = str(INSTALL_ROOT.resolve())
 
     options = Options()
-    download_dir = str(INSTALL_ROOT.resolve())
     options.add_experimental_option(
         "prefs",
         {
