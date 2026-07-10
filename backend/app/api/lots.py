@@ -17,7 +17,7 @@ from app.schemas import (
     ValidationIssueOut,
     FieldDiffOut,
 )
-from app.services.log_utils import normalize_die_id
+from app.services.log_utils import normalize_die_id, primary_die_id
 from app.services.sum_log_reconciler import reconcile_lot
 from app.services.importer import compute_fail_breakdowns, compute_final_yield, merge_and_persist_lot
 from app.services.round_merger import merge_parsed_sums
@@ -253,7 +253,7 @@ def _die_log_status(db: Session, die: DieRecord) -> tuple[str, Optional[int]]:
                 ChipLog.lot_id == die.lot_id,
                 ChipLog.round_key == die.round_key,
                 ChipLog.site == die.site,
-                ChipLog.primary_die_id == normalize_die_id(die.die_id),
+                ChipLog.primary_die_id == primary_die_id(die.die_id),
             )
             .first()
         )

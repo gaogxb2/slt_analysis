@@ -4,7 +4,7 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.models import ChipLog, ChipLogDieId, ImportLog, Lot, OneTest
-from app.services.log_utils import normalize_die_id
+from app.services.log_utils import normalize_die_id, primary_die_id
 from app.services.testlog_parser import parse_testlog_file, validate_chip_pf
 from app.services.types import ParsedLog
 
@@ -105,11 +105,11 @@ def link_chip_logs_to_dies(db: Session, lot_id: int) -> int:
             d.round_key or "",
             d.test_mode or "",
             d.site or 0,
-            normalize_die_id(d.die_id),
+            primary_die_id(d.die_id),
             d.barcode or "",
         )
         die_index[key] = d
-        fallback = (d.round_key or "", "", d.site or 0, normalize_die_id(d.die_id), d.barcode or "")
+        fallback = (d.round_key or "", "", d.site or 0, primary_die_id(d.die_id), d.barcode or "")
         if fallback not in die_index:
             die_index[fallback] = d
 

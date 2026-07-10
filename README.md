@@ -71,6 +71,22 @@ docs/TESTLOG_FORMAT.md  Log 格式与 Web 对账
 
 在 Web 中每个 `(LOT NO., STAGE)` 仍作为独立 LOT 记录入库；归组规则用于跨批次追溯与物料级分析。
 
+## SUM ↔ Log DieID 匹配规则
+
+SUM Rawdata 与芯片 Log 中的 DieID 均可能出现**多个**，格式如下：
+
+- **SUM**：`DieID` 字段内多个 ID 用分号 `;` 分隔，例如 `0CCE 8CD0 7D62 7248;1A2B 3C4D 5E6F 7890`
+- **Log**：`[CHIPINFO]` 下可有多组 `DIEID_STR`（第一组、第二组……）
+
+**对账与关联时**，统一取双方各自的**第一个** DieID 进行匹配：
+
+| 来源 | 取值 |
+|------|------|
+| SUM `DieID` | 按 `;` 分割后的**第一段** |
+| Log `DIEID_STR` | **第一组** `DIEID_STR` |
+
+匹配前会去掉空格并转大写（如 `0CCE 8CD0` → `0CCE8CD0`）。完整多 DieID 字符串仍保留在库中用于展示；仅匹配键使用上述主 DieID。
+
 ## 样例数据
 
 ### AB0000A* 系列（同一物料，不同 STAGE）

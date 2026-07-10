@@ -4,7 +4,7 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from app.models import ChipLog, DieRecord, Lot
-from app.services.log_utils import normalize_die_id, normalize_test_time, pf_match
+from app.services.log_utils import normalize_test_time, pf_match, primary_die_id
 
 
 @dataclass
@@ -57,7 +57,7 @@ def _match_key(
     die_id: str,
     barcode: str,
 ) -> tuple:
-    return (round_key or "", test_mode or "", site or 0, normalize_die_id(die_id), barcode or "")
+    return (round_key or "", test_mode or "", site or 0, primary_die_id(die_id), barcode or "")
 
 
 def _detect_diffs(die: DieRecord, log: ChipLog) -> List[FieldDiff]:

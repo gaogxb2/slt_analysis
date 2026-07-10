@@ -6,6 +6,14 @@ def normalize_die_id(die_id: str) -> str:
     return re.sub(r"\s+", "", die_id or "").upper()
 
 
+def primary_die_id(die_id: str) -> str:
+    """取分号前的第一个 DieID 并规范化，用于 SUM↔Log 对账匹配。"""
+    if not die_id:
+        return ""
+    first = die_id.split(";")[0].strip()
+    return normalize_die_id(first)
+
+
 def normalize_test_time(value: str) -> str:
     """Normalize test time strings for comparison."""
     if not value:

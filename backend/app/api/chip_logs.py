@@ -9,7 +9,7 @@ from app.schemas import (
     OneTestOut,
     SumCompareOut,
 )
-from app.services.log_utils import normalize_die_id
+from app.services.log_utils import normalize_die_id, primary_die_id
 
 router = APIRouter(tags=["chip-logs"])
 
@@ -115,7 +115,7 @@ def get_die_log(die_record_id: int, db: Session = Depends(get_db)):
             )
             .all()
         )
-        norm = normalize_die_id(die.die_id)
+        norm = primary_die_id(die.die_id)
         cl = next((c for c in candidates if normalize_die_id(c.primary_die_id) == norm), None)
     if not cl:
         raise HTTPException(404, "No log found for this die")
