@@ -11,6 +11,9 @@ venv/
 backend/data/*.db
 backend/data/uploads/
 
+# 本地测试 SUM / Log 数据（可 seed 或自行放入）
+logs/
+
 # Node
 node_modules/
 frontend/dist/
@@ -24,5 +27,5 @@ frontend/dist/
 # Cursor
 .cursor/
 
-# 根目录样例 log，logs 内保留
+# 根目录样例 log
 /testlog.log
