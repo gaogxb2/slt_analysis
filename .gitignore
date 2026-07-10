@@ -27,5 +27,6 @@ frontend/dist/
 # Cursor
 .cursor/
 
-# 根目录样例 log
+# 根目录样例 log / 调试输出
 /testlog.log
+/sum_log_match_debug.log
