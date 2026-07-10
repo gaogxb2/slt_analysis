@@ -55,9 +55,8 @@ def _match_key(
     test_mode: str,
     site: int,
     die_id: str,
-    barcode: str,
 ) -> tuple:
-    return (round_key or "", test_mode or "", site or 0, primary_die_id(die_id), barcode or "")
+    return (round_key or "", test_mode or "", site or 0, primary_die_id(die_id))
 
 
 def _detect_diffs(die: DieRecord, log: ChipLog) -> List[FieldDiff]:
@@ -112,11 +111,11 @@ def reconcile_lot(
 
     die_by_key: dict[tuple, DieRecord] = {}
     for d in dies:
-        die_by_key[_match_key(d.round_key or "", d.test_mode or "", d.site or 0, d.die_id, d.barcode or "")] = d
+        die_by_key[_match_key(d.round_key or "", d.test_mode or "", d.site or 0, d.die_id)] = d
 
     log_by_key: dict[tuple, ChipLog] = {}
     for lg in logs:
-        log_by_key[_match_key(lg.round_key or "", lg.test_mode or "", lg.site or 0, lg.primary_die_id, lg.barcode or "")] = lg
+        log_by_key[_match_key(lg.round_key or "", lg.test_mode or "", lg.site or 0, lg.primary_die_id)] = lg
 
     all_keys = set(die_by_key.keys()) | set(log_by_key.keys())
     rows: List[ReconcileRow] = []

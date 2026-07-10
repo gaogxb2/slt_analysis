@@ -29,16 +29,17 @@ def _primary_die_id(parsed: ParsedLog) -> str:
 
 
 def _find_existing_chip_log(db: Session, lot_id: int, parsed: ParsedLog) -> Optional[ChipLog]:
-  primary = normalize_die_id(_primary_die_id(parsed))
-  q = db.query(ChipLog).filter(
-      ChipLog.lot_id == lot_id,
-      ChipLog.test_mode == parsed.test_flow,
-      ChipLog.site == parsed.site,
-      ChipLog.primary_die_id == primary,
-  )
-  if parsed.barcode:
-      q = q.filter(ChipLog.barcode == parsed.barcode)
-  return q.first()
+    primary = normalize_die_id(_primary_die_id(parsed))
+    return (
+        db.query(ChipLog)
+        .filter(
+            ChipLog.lot_id == lot_id,
+            ChipLog.test_mode == parsed.test_flow,
+            ChipLog.site == parsed.site,
+            ChipLog.primary_die_id == primary,
+        )
+        .first()
+    )
 
 
 def _persist_chip_log(db: Session, lot: Lot, parsed: ParsedLog, existing: Optional[ChipLog]) -> ChipLog:
@@ -106,10 +107,9 @@ def link_chip_logs_to_dies(db: Session, lot_id: int) -> int:
             d.test_mode or "",
             d.site or 0,
             primary_die_id(d.die_id),
-            d.barcode or "",
         )
         die_index[key] = d
-        fallback = (d.round_key or "", "", d.site or 0, primary_die_id(d.die_id), d.barcode or "")
+        fallback = (d.round_key or "", "", d.site or 0, primary_die_id(d.die_id))
         if fallback not in die_index:
             die_index[fallback] = d
 
@@ -120,11 +120,10 @@ def link_chip_logs_to_dies(db: Session, lot_id: int) -> int:
             cl.test_mode or "",
             cl.site or 0,
             normalize_die_id(cl.primary_die_id),
-            cl.barcode or "",
         )
         die = die_index.get(key)
         if not die:
-            key_fb = (cl.round_key or "", "", cl.site or 0, normalize_die_id(cl.primary_die_id), cl.barcode or "")
+            key_fb = (cl.round_key or "", "", cl.site or 0, normalize_die_id(cl.primary_die_id))
             die = die_index.get(key_fb)
         if die:
             cl.die_record_id = die.id

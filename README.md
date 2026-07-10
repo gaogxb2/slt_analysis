@@ -71,21 +71,38 @@ docs/TESTLOG_FORMAT.md  Log 格式与 Web 对账
 
 在 Web 中每个 `(LOT NO., STAGE)` 仍作为独立 LOT 记录入库；归组规则用于跨批次追溯与物料级分析。
 
-## SUM ↔ Log DieID 匹配规则
+## SUM ↔ Log 对应关系
 
-SUM Rawdata 与芯片 Log 中的 DieID 均可能出现**多个**，格式如下：
+SUM 与芯片 Log 先归入同一 LOT：`(LOT NO., STAGE)` 对应 Log 的 `(CUSTOMER LOT ID, TEST STAGE)`。
 
-- **SUM**：`DieID` 字段内多个 ID 用分号 `;` 分隔，例如 `0CCE 8CD0 7D62 7248;1A2B 3C4D 5E6F 7890`
-- **Log**：`[CHIPINFO]` 下可有多组 `DIEID_STR`（第一组、第二组……）
+单颗芯片的对账、关联、追溯使用以下 **4 项匹配键**（**不含 2DBarCode**；真实产线 Log 往往没有条码，文件名也不强制带条码）：
 
-**对账与关联时**，统一取双方各自的**第一个** DieID 进行匹配：
+```
+(round_key, test_mode, site, primary_die_id)
+```
 
-| 来源 | 取值 |
-|------|------|
-| SUM `DieID` | 按 `;` 分割后的**第一段** |
-| Log `DIEID_STR` | **第一组** `DIEID_STR` |
+| 匹配键 | SUM 来源 | Log 来源 |
+|--------|----------|----------|
+| 批次（LOT 级） | `LOT NO.` + `STAGE` | `CUSTOMER LOT ID` + `TEST STAGE` |
+| `round_key` | `Test Mode` 解析，如 `M2R1+2` → `M2R1` | `Test FLOW` 同样解析 |
+| `test_mode` | 完整 `Test Mode`，如 `M2R1+2` | 完整 `Test FLOW` |
+| `site` | Rawdata `Site` | `[BEGIN]` 的 `TEST SITE` |
+| `primary_die_id` | `DieID` **分号前第一段** | **第一组** `DIEID_STR` |
 
-匹配前会去掉空格并转大写（如 `0CCE 8CD0` → `0CCE8CD0`）。完整多 DieID 字符串仍保留在库中用于展示；仅匹配键使用上述主 DieID。
+### DieID 多 ID 规则
+
+- **SUM**：`DieID` 可用分号 `;` 分隔多个 ID，如 `0CCE 8CD0 7D62 7248;0000 0000 0000 0000`
+- **Log**：`[CHIPINFO]` 可有多组 `DIEID_STR`；匹配时仅用**第一组**
+- 比较前去掉空格并转大写（`0CCE 8CD0` → `0CCE8CD0`）
+
+### 兜底规则
+
+若 `test_mode` 对不上，会忽略 `test_mode`，仅按 `(round_key, site, primary_die_id)` 再尝试关联。
+
+### 不参与匹配的字段
+
+- **`2DBarCode`**：SUM Rawdata 可有，Log 正文通常无；**不用于** SUM↔Log 匹配（仅作展示/追溯参考）
+- Log 文件名中的条码后缀为可选；有则入库展示，无则不影响关联
 
 ## 样例数据
 
